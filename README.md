@@ -1,6 +1,6 @@
 # muddy
 
-**DEAD:** I'm too lazy to work on this anymore. Plus, I'm kinda toying with the idea of making my own little browser MUD instead.
+[![Maintenance](https://img.shields.io/maintenance/no/2014.svg)]()
 
 A MUD client in your browser usin' node.js & websockets.
 
