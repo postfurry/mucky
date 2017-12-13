@@ -1,14 +1,15 @@
 # mucky
+   
+[![Maintenance](https://img.shields.io/maintenance/yes/2017.svg)]()
 
-[![Maintenance](https://img.shields.io/maintenance/no/2014.svg)]()
-
-A MUCK client in your browser usin' node.js & websockets.
+A MU* (MUCK/MUD/MUSH/etc) client in your browser using node.js & websockets.
 
 This is very bare-bones and should basically work with any telnet MU*
 
 ## Features
 
-- Command History
+- Command history
+- ANSI color
 
 ## Installation
 
@@ -18,3 +19,5 @@ This is very bare-bones and should basically work with any telnet MU*
     $ vim config/config.json
     $ npm start
     $ open http://localhost:6660
+    
+Based on https://github.com/dannytatom/muddy
