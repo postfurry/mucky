@@ -9,16 +9,10 @@ var config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
   , server = http.createServer(app)
   , io     = require('socket.io')(server)
 
-var alias     = require('./lib/alias')
-  , trigger   = require('./lib/trigger')
-  , formatter = require('./lib/formatter')
+var formatter = require('./lib/formatter')
 
 var createResponse = function(command, data) {
   return { command: command, data: data }
-}
-
-var log = function(string) {
-  console.log('\033[36m[ mucky ]\033[0m → ' + string)
 }
 
 app.set('view engine', 'ejs');
@@ -35,26 +29,21 @@ io.sockets.on('connection', function(socket) {
   var mud = net.createConnection(target.port, target.host)
   mud.setEncoding('utf8')
 
-  log(socket.id + ' connected to ' + target.host + ':' + target.port)
+  console.log(socket.id + ' connected to ' + target.host + ':' + target.port)
 
   mud.addListener('data', function(data) {
-    var commands  = trigger.scan(data)
-      , formatted = formatter.go(data)
-
-    socket.emit('message', createResponse('updateWorld', formatted))
-
-    if (commands) {
-      for (var i = 0; i < commands.length; i++) {
-        mud.write(commands[i])
-      }
-    }
+    socket.emit('message', createResponse('updateWorld', formatter.go(data)))
   })
 
   socket.on('message', function(data) {
-    mud.write(alias.format(data))
+    try {
+      mud.write(data)
+    } catch(e) {
+      console.log('Caught exception: ' + e)
+    }
   })
 })
 
 server.listen(config.muckyPort)
 
-log('Server started on http://localhost:6660')
+console.log('Mucky server started on http://localhost:' + config.muckyPort)
