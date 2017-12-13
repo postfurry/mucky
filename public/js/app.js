@@ -36,6 +36,10 @@ $(function() {
     $(window).on('beforeunload', function() {
       return 'Are you sure you want to disconnect?'
     })
+
+    $(window).on('unload', function() {
+      socket.emit('message', 'QUIT')
+    })
   })
 
   socket.on('message', function(message) {
