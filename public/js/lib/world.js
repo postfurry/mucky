@@ -6,7 +6,8 @@ var World = function(selector) {
 
 World.prototype.update = function(data) {
   $(this.selector).append(data)
-  $(this.selector).attr({ scrollTop: $(this.selector).attr('scrollHeight') })
+  console.log('updating...', this.selector, $(this.selector), $(this.selector).prop('scrollHeight'));
+  $(this.selector).prop({ scrollTop: $(this.selector).prop('scrollHeight') })
 }
 
 World.prototype.selfMesssage = function(message) {
@@ -35,7 +36,7 @@ World.prototype.listAliases = function(aliases) {
 
 World.prototype.listTriggers = function(triggers) {
   this.systemMessage('Your Triggers:\r\n')
-  
+
   for (trigger in triggers) {
     var key   = trigger
       , value = triggers[trigger]

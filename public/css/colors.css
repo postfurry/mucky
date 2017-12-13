@@ -13,69 +13,69 @@ span.normal {
 }
 
 span.self {
-  color: #5d5d5d;
+  color: #586e75;
 }
 
 span.black {
-  color: #777777;
+  color: #073642;
 }
 
 span.red {
-  color: #d08356;
+  color: #dc322f;
 }
 
 span.green {
-  color: #a2a96f;
+  color: #859900;
 }
 
 span.yellow {
-  color: #e3d96f;
+  color: #b58900;
 }
 
 span.blue {
-  color: #8a9597;
+  color: #268bd2;
 }
 
 span.magenta {
-  color: #be96b3;
+  color: #d33682;
 }
 
 span.cyan {
-  color: #74dad9;
+  color: #2aa198;
 }
 
 span.white {
-  color: #ffffff;
+  color: #eee8d5;
 }
 
 span.black-bg {
-  background: #777777;
+  background: #073642;
 }
 
 span.red-bg {
-  background: #d08356;
+  background: #dc322f;
 }
 
 span.green-bg {
-  background: #a2a96f;
+  background: #859900;
 }
 
 span.yellow-bg {
-  background: #e3d96f;
+  background: #b58900;
 }
 
 span.blue-bg {
-  background: #8a9597;
+  background: #268bd2;
 }
 
 span.magenta-bg {
-  background: #be96b3;
+  background: #d33682;
 }
 
 span.cyan-bg {
-  background: #74dad9;
+  background: #2aa198;
 }
 
 span.white-bg {
-  background: #ffffff;
+  background: #eee8d5;
 }
