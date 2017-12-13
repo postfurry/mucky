@@ -18,7 +18,7 @@ var createResponse = function(command, data) {
 }
 
 var log = function(string) {
-  console.log('\033[36m[ muddy ]\033[0m → ' + string)
+  console.log('\033[36m[ mucky ]\033[0m → ' + string)
 }
 
 app.set('view engine', 'ejs');
@@ -55,6 +55,6 @@ io.sockets.on('connection', function(socket) {
   })
 })
 
-server.listen(config.muddyPort)
+server.listen(config.muckyPort)
 
 log('Server started on http://localhost:6660')

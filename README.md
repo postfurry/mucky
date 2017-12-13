@@ -12,8 +12,8 @@ This is very bare-bones and should basically work with any telnet MU*
 
 ## Installation
 
-    $ git clone git://github.com/dannytatom/muddy.git
-    $ cd muddy
+    $ git clone git://github.com/postfurry/mucky.git
+    $ cd mucky
     $ npm install
     $ vim config/config.json
     $ npm start

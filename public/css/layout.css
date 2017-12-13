@@ -1,15 +1,10 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Source Code Pro', monospace;
   font-size: 14px;
   color: #909090;
   background: #272727;
-}
-
-@font-face {
-  font-family: DroidSansMono;
-  src: url('/fnt/DroidSansMono.ttf');
 }
 
 h1, h2, h3, h4, p, ul, li {
@@ -31,7 +26,6 @@ ul {
     overflow-y: scroll;
     padding: 10px;
     height: 200px;
-    font-family: DroidSansMono;
     font-size: 10px;
     line-height: 14px;
     white-space: pre-wrap;
