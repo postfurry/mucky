@@ -3,7 +3,7 @@ $(function() {
     , socket  = io.connect()
 
   var resizeUI = function() {
-    $('#output-pane').attr({ scrollTop: $('#output-pane').attr('scrollHeight') })
+    $('#output-pane').prop({ scrollTop: $('#output-pane').prop('scrollHeight') })
   }
 
   resizeUI()
@@ -29,9 +29,13 @@ $(function() {
       }
     })
 
-    window.onresize = function(event) {
+    $(window).on('resize', function(event) {
       resizeUI()
-    }
+    })
+
+    $(window).on('beforeunload', function() {
+      return 'Are you sure you want to disconnect?'
+    })
   })
 
   socket.on('message', function(message) {
