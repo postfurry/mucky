@@ -4,6 +4,7 @@ var fs      = require('fs')
   , express = require('express')
 
 var config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
+  , target = config.target
   , app    = express()
   , server = http.createServer(app)
   , io     = require('socket.io')(server)
@@ -26,15 +27,15 @@ app.use(express.static(__dirname + '/public'))
 
 app.get('/', function(req, res) {
   res.render('index.ejs', {
-    mud: config.name
+    mud: target.name
   })
 })
 
 io.sockets.on('connection', function(socket) {
-  var mud = net.createConnection(config.port, config.host)
+  var mud = net.createConnection(target.port, target.host)
   mud.setEncoding('utf8')
 
-  log(socket.id + ' connected to ' + config.host + ':' + config.port)
+  log(socket.id + ' connected to ' + target.host + ':' + target.port)
 
   mud.addListener('data', function(data) {
     var commands  = trigger.scan(data)
@@ -50,24 +51,10 @@ io.sockets.on('connection', function(socket) {
   })
 
   socket.on('message', function(data) {
-    if (data.match(/^;alias add/i)) {
-      alias.create(data)
-    } else if (data.match(/^;alias ls/i)) {
-      socket.send(createResponse('listAliases', alias.list()))
-    } else if (data.match(/^;alias rm/i)) {
-      alias.remove(data)
-    } else if (data.match(/^;trigger add/i)) {
-      trigger.create(data)
-    } else if (data.match(/^;trigger ls/i)) {
-      socket.send(createResponse('listTriggers', trigger.list()))
-    } else if (data.match(/^;trigger rm/i)) {
-      trigger.remove(data)
-    } else {
-      mud.write(alias.format(data))
-    }
+    mud.write(alias.format(data))
   })
 })
 
-server.listen(6660)
+server.listen(config.muddyPort)
 
 log('Server started on http://localhost:6660')

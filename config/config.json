@@ -1,5 +1,8 @@
 {
-  "name": "Postfurry MUCK",
-  "host": "muck.postfurry.net",
-  "port": "4444"
+  "target": {
+    "name": "Postfurry MUCK",
+    "host": "muck.postfurry.net",
+    "port": "4444"
+  },
+  "muddyPort": 6660
 }
