@@ -1,7 +1,7 @@
 {
-  "name": "muddy",
+  "name": "mucky",
   "version": "1.0.0",
-  "description": "A MUD client in ya browser",
+  "description": "A MU* client in the browser",
   "main": "init.js",
   "dependencies": {
     "ejs": "^2.5.5",
@@ -14,12 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dannytatom/muddy.git"
+    "url": "git+https://github.com/postfurry/mucky.git"
   },
-  "author": "Danny Tatom",
-  "license": "MIT",
+  "author": "Morgan Nichols",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dannytatom/muddy/issues"
+    "url": "https://github.com/postfurry/mucky/issues"
   },
-  "homepage": "https://github.com/dannytatom/muddy#readme"
+  "homepage": "https://github.com/postfurry/mucky#readme"
 }

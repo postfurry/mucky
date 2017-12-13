@@ -1,5 +1,5 @@
 {
-  "name": "Aardwolf",
-  "host": "aardmud.org",
-  "port": "23"
+  "name": "Postfurry MUCK",
+  "host": "muck.postfurry.net",
+  "port": "4444"
 }
