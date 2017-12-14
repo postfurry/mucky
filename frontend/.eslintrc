@@ -1,0 +1,14 @@
+{
+  "extends": ["standard-preact"],
+  "rules": {
+    "semi": [ 2, "never" ],
+    "quotes": [ 2, "single" ],
+    "jsx-quotes": [ 2, "prefer-double" ],
+    "react/self-closing-comp": ["error", {
+      "component": true,
+      "html": true
+    }],
+    "react/prop-types": [ 2 ],
+    "react/jsx-space-before-closing": [ 2 ]
+  }
+}
