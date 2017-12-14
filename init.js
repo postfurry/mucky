@@ -37,7 +37,7 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('message', function(data) {
     try {
-      mud.write(data)
+      mud.write(data + '\n')
     } catch(e) {
       console.log('Caught exception: ' + e)
     }

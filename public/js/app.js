@@ -11,7 +11,7 @@ $(function() {
   socket.on('connect', function() {
     $('.input-box').focus()
 
-    $('.input-box').keyup(function(event) {
+    $('.input-box').on('keydown', function(event) {
       if (event.keyCode == 13) {
         socket.emit('message', $('.input-box').val())
         world.selfMesssage($('.input-box').val())
