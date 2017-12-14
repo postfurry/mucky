@@ -13,17 +13,20 @@ $(function() {
 
     $('.input-box').on('keydown', function(event) {
       if (event.keyCode == 13) {
+        event.preventDefault();
         socket.emit('message', $('.input-box').val())
         world.selfMesssage($('.input-box').val())
         world.updateHistory($('.input-box').val())
 
         $('.input-box').val('')
       } else if (event.keyCode == 38) {
-        if (world.history[world.current - 1]) {
+        if (this.selectionStart === 0 && world.history[world.current - 1]) {
+          event.preventDefault();
           $('.input-box').val(world.history[world.current -= 1])
         }
       } else if (event.keyCode == 40) {
-        if (world.history[world.current]) {
+        if (this.selectionStart === $('.input-box').val().length && world.history[world.current]) {
+          event.preventDefault();
           $('.input-box').val(world.history[world.current += 1])
         }
       }
