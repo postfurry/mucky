@@ -1,5 +1,5 @@
 *.swp
 .DS_Store
 node_modules
-public/js/bundle.js
-public/js/bundle.js.map
+frontend/bundle.js
+frontend/bundle.js.map
