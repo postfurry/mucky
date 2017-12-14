@@ -1,3 +1,5 @@
+@import 'colors';
+
 body {
   margin: 0;
   padding: 0;
@@ -6,4 +8,12 @@ body {
   color: $lighter;
   background: $darkest;
   box-sizing: border-box;
+}
+
+a, a:visited, a:hover {
+  color: $blue;
+}
+
+html, body {
+  height: 100%;
 }

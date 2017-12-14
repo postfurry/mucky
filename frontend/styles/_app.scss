@@ -1,0 +1,48 @@
+@import 'colors';
+
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .banner {
+    flex: 0 0 auto;
+    padding: 5px;
+    background: $black;
+    font-size: 14px;
+
+    a, a:visited, a:hover {
+      color: $midlight;
+    }
+  }
+
+  .output-pane {
+    position: relative;
+    overflow-y: auto;
+    padding: 10px;
+    white-space: pre-wrap;
+    flex: 1 1 auto;
+  }
+
+  .input-pane {
+    flex: 0 0 auto;
+    padding: 10px;
+    background: $darker;
+
+    textarea {
+      resize: none;
+      border: $darker;
+      background: $darker;
+      color: $lightest;
+      font-family: "Source Code Pro";
+      font-size: 20px;
+      width: 100%;
+      height: 4em;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
