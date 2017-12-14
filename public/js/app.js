@@ -47,10 +47,6 @@ $(function() {
 
     if (command == 'updateWorld') {
       world.update(data)
-    } else if (command == 'listAliases') {
-      world.listAliases(data)
-    } else if (command == 'listTriggers') {
-      world.listTriggers(data)
     }
   })
 

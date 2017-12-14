@@ -21,40 +21,40 @@ app.use(express.static(__dirname + '/public'))
 
 app.get('/', function(req, res) {
   res.render('index.ejs', {
-    mud: target.name
+    worldName: target.name
   })
 })
 
 io.sockets.on('connection', function(socket) {
-  var mud = net.createConnection(target.port, target.host)
-  mud.setEncoding('utf8')
+  var worldConnection = net.createConnection(target.port, target.host)
+  worldConnection.setEncoding('utf8')
 
   var log = function(message) {
     console.log(socket.id + ' : ' + message)
   }
 
-  log('connected to ' + target.host + ':' + target.port)
+  log('connected to world ' + target.host + ':' + target.port)
 
-  mud.addListener('data', function(data) {
+  worldConnection.addListener('data', function(data) {
     socket.emit('message', createResponse('updateWorld', formatter.go(data)))
   })
 
-  mud.addListener('close', function() {
-    log('MU* connection closed')
+  worldConnection.addListener('close', function() {
+    log('disconnected from world')
     socket.disconnect()
   })
 
   socket.on('message', function(data) {
     try {
-      mud.write(data + '\n')
+      worldConnection.write(data + '\n')
     } catch(e) {
       log('caught exception: ' + e)
     }
   })
 
   socket.on('disconnect', function(data) {
-    log('disconnected')
-    mud.destroy();
+    log('disconnected from webclient')
+    worldConnection.destroy();
   })
 })
 

@@ -6,7 +6,6 @@ var World = function(selector) {
 
 World.prototype.update = function(data) {
   $(this.selector).append(data)
-  console.log('updating...', this.selector, $(this.selector), $(this.selector).prop('scrollHeight'));
   $(this.selector).prop({ scrollTop: $(this.selector).prop('scrollHeight') })
 }
 
@@ -21,26 +20,4 @@ World.prototype.systemMessage = function(message) {
 World.prototype.updateHistory = function(command) {
   this.history.push(command)
   this.current = this.history.length
-}
-
-World.prototype.listAliases = function(aliases) {
-  this.systemMessage('Your Aliases:\r\n')
-
-  for (alias in aliases) {
-    var key   = alias
-      , value = aliases[alias]
-
-    this.systemMessage('type `' + key + '` to `' + value + '`')
-  }
-}
-
-World.prototype.listTriggers = function(triggers) {
-  this.systemMessage('Your Triggers:\r\n')
-
-  for (trigger in triggers) {
-    var key   = trigger
-      , value = triggers[trigger]
-
-    this.systemMessage('type `' + key + '` to `' + value + '`')
-  }
 }
