@@ -2,26 +2,12 @@ var fs      = require('fs')
   , net     = require('net')
   , http    = require('http')
   , express = require('express')
-  , xkcdPassword = require('xkcd-password')
-  , depromisify = require('depromisify').depromisify
 
 var config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
   , target = config.target
   , app    = express()
   , server = http.createServer(app)
   , io     = require('socket.io')(server)
-  , sidGenerator = new xkcdPassword()
-
-sidOptions = {
-  numWords: 3,
-  minLength: 4,
-  maxLength: 6
-}
-
-getSid = function() {
-  var wordList = depromisify(sidGenerator.generate(sidOptions))
-  return wordList.join('-')
-}
 
 var formatter = require('./lib/formatter')
 
@@ -51,7 +37,7 @@ app.get('/', function(req, res) {
   })
 })
 
-var worldConnections = {}
+var sessions = {}
 
 var getNewWorldConnection = function() {
   var worldConnection = net.createConnection(target.port, target.host)
@@ -70,13 +56,18 @@ io.sockets.on('connection', function(socket) {
     var worldConnection
     log('got sessionId from client: ' + clientSessionId)
     sessionId = clientSessionId
-    if (worldConnections[sessionId]) {
+    if (sessions[sessionId]) {
       log('found existing world connection for sessionId, reattaching')
-      worldConnection = worldConnections[sessionId]
+      worldConnection = sessions[sessionId].connection
+      sessions[sessionId].sockets++
     } else {
       log('found no connection for sessionId, creating new connection')
       worldConnection = getNewWorldConnection()
-      worldConnections[sessionId] = worldConnection
+      sessions[sessionId] = {
+        connection: worldConnection,
+        lastActive: new Date(),
+        sockets: 1
+      }
     }
 
     var handleData = function(data) {
@@ -86,9 +77,9 @@ io.sockets.on('connection', function(socket) {
     worldConnection.addListener('data', handleData)
 
     var handleClose = function() {
-      log('disconnected from world')
+      log('disconnected from world, closing session ' + sessionId)
       socket.disconnect()
-      delete worldConnections[sessionId];
+      delete sessions[sessionId];
     }
 
     worldConnection.addListener('close', handleClose)
@@ -102,12 +93,31 @@ io.sockets.on('connection', function(socket) {
     })
 
     socket.on('disconnect', function(data) {
-      log('disconnected from webclient')
+      log('disconnected from webclient session ' + sessionId)
+      if (sessions[sessionId]) {
+        sessions[sessionId].sockets--
+        sessions[sessionId].lastActive = new Date()
+      }
       worldConnection.removeListener('data', handleData);
       worldConnection.removeListener('close', handleClose);
     })
   })
 })
+
+const staleSessionMilliseconds = 60 * 1000
+
+// We only want to keep detached sessions around briefly, so we poll for
+// detached sessions with no activity in the last minute, and close them.
+setInterval(function(){
+  Object.keys(sessions).forEach(function(sessionId){
+    var session = sessions[sessionId]
+    if (!session.sockets && new Date - session.lastActive > staleSessionMilliseconds) {
+      console.log('Pruning stale orphan session: ' + sessionId)
+      session.connection.destroy()
+      delete sessions[sessionId]
+    }
+  })
+}, staleSessionMilliseconds)
 
 server.listen(config.muckyPort)
 

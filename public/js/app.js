@@ -1,5 +1,7 @@
 const $ = require('jquery')
 const World = require('./lib/world.js')
+const Cookie = require('js-cookie')
+const uuidv4 = require('uuid/v4')
 
 $(function() {
   var world   = new World('#output-pane')
@@ -12,6 +14,13 @@ $(function() {
   resizeUI()
 
   socket.on('connect', function() {
+    var sessionId = Cookie.get('sessionId')
+    if (!sessionId) {
+      sessionId = uuidv4()
+      Cookie.set('sessionId', sessionId)
+    }
+    socket.emit('sessionId', sessionId)
+
     $('.input-box').focus()
 
     $('.input-box').on('keydown', function(event) {
@@ -42,10 +51,6 @@ $(function() {
     $(window).on('beforeunload', function() {
       return 'Are you sure you want to disconnect?'
     })
-  })
-
-  socket.on('connect', function() {
-    socket.emit('sessionId', 'correct-horse-battery-staple')
   })
 
   socket.on('message', function(message) {
