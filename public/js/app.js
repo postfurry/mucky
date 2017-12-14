@@ -39,10 +39,6 @@ $(function() {
     $(window).on('beforeunload', function() {
       return 'Are you sure you want to disconnect?'
     })
-
-    $(window).on('unload', function() {
-      socket.emit('message', 'QUIT')
-    })
   })
 
   socket.on('message', function(message) {
@@ -56,5 +52,10 @@ $(function() {
     } else if (command == 'listTriggers') {
       world.listTriggers(data)
     }
+  })
+
+  socket.on('disconnect', function() {
+    world.systemMessage('Connection closed')
+    $(window).off('unload beforeunload')
   })
 })

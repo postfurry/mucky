@@ -29,18 +29,32 @@ io.sockets.on('connection', function(socket) {
   var mud = net.createConnection(target.port, target.host)
   mud.setEncoding('utf8')
 
-  console.log(socket.id + ' connected to ' + target.host + ':' + target.port)
+  var log = function(message) {
+    console.log(socket.id + ' : ' + message)
+  }
+
+  log('connected to ' + target.host + ':' + target.port)
 
   mud.addListener('data', function(data) {
     socket.emit('message', createResponse('updateWorld', formatter.go(data)))
+  })
+
+  mud.addListener('close', function() {
+    log('MU* connection closed')
+    socket.disconnect()
   })
 
   socket.on('message', function(data) {
     try {
       mud.write(data + '\n')
     } catch(e) {
-      console.log('Caught exception: ' + e)
+      log('caught exception: ' + e)
     }
+  })
+
+  socket.on('disconnect', function(data) {
+    log('disconnected')
+    mud.destroy();
   })
 })
 
