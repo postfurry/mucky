@@ -20,6 +20,7 @@
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "cross-env": "^5.1.1",
+    "css-loader": "^0.28.7",
     "eslint": "^4.13.1",
     "eslint-plugin-flowtype": "^2.40.1",
     "eslint-plugin-import": "^2.8.0",
@@ -29,12 +30,13 @@
     "node-sass-chokidar": "0.0.3",
     "npm-run-all": "^4.1.2",
     "rimraf": "^2.6.2",
+    "style-loader": "^0.19.1",
     "webpack": "^3.10.0",
     "webpack-dev-middleware": "^1.12.2"
   },
   "scripts": {
-    "build-css": "node-sass-chokidar public/css -o public/css",
-    "watch-css-only": "node-sass-chokidar public/css -o public/css --watch --recursive",
+    "build-css": "node-sass-chokidar frontend -o frontend",
+    "watch-css-only": "node-sass-chokidar frontend -o frontend --watch --recursive",
     "watch-css": "npm-run-all build-css watch-css-only",
     "clean-frontend-js": "rimraf public/js/bundle.js public/js/bundle.js.map",
     "build-frontend-js": "cross-env NODE_ENV=production webpack -p",

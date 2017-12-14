@@ -30,6 +30,10 @@ module.exports = {
               plugins: [require.resolve('babel-plugin-transform-react-jsx')],
             },
           },
+          {
+            test: /\.css$/,
+            use: [ 'style-loader', 'css-loader' ]
+          }
         ]
       }
     ]

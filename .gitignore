@@ -3,3 +3,4 @@
 node_modules
 frontend/bundle.js
 frontend/bundle.js.map
+frontend/**/*.css
