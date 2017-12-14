@@ -8,7 +8,6 @@
       "component": true,
       "html": true
     }],
-    "react/prop-types": [ 2 ],
     "react/jsx-space-before-closing": [ 2 ]
   }
 }

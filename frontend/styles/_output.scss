@@ -1,0 +1,11 @@
+@import 'colors';
+
+.output-line {
+  &.self {
+    color: $dark;
+  }
+
+  &.system {
+    color: $yellow;
+  }
+}

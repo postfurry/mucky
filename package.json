@@ -5,6 +5,7 @@
   "main": "init.js",
   "dependencies": {
     "autosize": "^4.0.0",
+    "classnames": "^2.2.5",
     "ejs": "^2.5.5",
     "eslint-config-standard-preact": "^1.1.6",
     "express": "^4.14.0",

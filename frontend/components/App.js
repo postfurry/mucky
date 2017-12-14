@@ -3,29 +3,22 @@ import io from 'socket.io-client'
 import Cookie from 'js-cookie'
 import uuidv4 from 'uuid/v4'
 
-/** @jsx h */
+import OutputLine from './OutputLine.js'
 
-const world = {
-  update: function(data) {
-    console.log('World update:', data)
-  },
-  systemMessage: function(data) {
-    console.log('World systemMessage:', data)
-  }
-}
+/** @jsx h */
 
 export default class App extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      inputBuffer: 'Hello?'
+      inputBuffer: '',
+      scrollback: []
     }
 
     this.socket = io.connect()
 
     this.socket.on('connect', () => {
-      console.log('Connected!')
       var sessionId = Cookie.get('sessionId')
       if (!sessionId) {
         sessionId = uuidv4()
@@ -39,12 +32,24 @@ export default class App extends Component {
         , data    = message.data
 
       if (command == 'updateWorld') {
-        world.update(data)
+        this.setState({
+          scrollback: this.state.scrollback.concat([{
+            type: 'world',
+            data: data,
+            timestamp: new Date()
+          }])
+        })
       }
     })
 
-    this.socket.on('disconnect', function() {
-      world.systemMessage('Connection closed')
+    this.socket.on('disconnect', () => {
+      this.setState({
+        scrollback: this.state.scrollback.concat([{
+          type: 'system',
+          data: 'Connection closed',
+          timestamp: new Date()
+        }])
+      })
     })
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
@@ -60,7 +65,14 @@ export default class App extends Component {
       case 13:
         event.preventDefault()
         this.socket.emit('message', this.state.inputBuffer)
-        this.setState({inputBuffer: ''})
+        this.setState({
+          inputBuffer: '',
+          scrollback: this.state.scrollback.concat([{
+            type: 'self',
+            data: this.state.inputBuffer + '\n',
+            timestamp: new Date()
+          }])
+        })
         return
       case 38:
         if (event.target.selectionStart === 0) {
@@ -85,7 +97,15 @@ export default class App extends Component {
         Report issues on the Discord server or {' '}
         <a target="_blank" href="https://github.com/postfurry/mucky/issues">Github</a>
       </div>
-      <div className="output-pane">Output Pane</div>
+      <div className="output-pane">
+        { this.state.scrollback.map((line) => {
+          return <OutputLine
+            type={line.type}
+            data={line.data}
+            timestamp={line.timestamp}
+          />
+        }) }
+      </div>
       <div className="input-pane">
         <textarea
           value={this.state.inputBuffer}
