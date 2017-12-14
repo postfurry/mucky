@@ -41,6 +41,10 @@ $(function() {
     })
   })
 
+  socket.on('connect', function() {
+    socket.emit('sessionId', 'correct-horse-battery-staple')
+  })
+
   socket.on('message', function(message) {
     var command = message.command
       , data    = message.data

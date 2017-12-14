@@ -2,12 +2,26 @@ var fs      = require('fs')
   , net     = require('net')
   , http    = require('http')
   , express = require('express')
+  , xkcdPassword = require('xkcd-password')
+  , depromisify = require('depromisify').depromisify
 
 var config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
   , target = config.target
   , app    = express()
   , server = http.createServer(app)
   , io     = require('socket.io')(server)
+  , sidGenerator = new xkcdPassword()
+
+sidOptions = {
+  numWords: 3,
+  minLength: 4,
+  maxLength: 6
+}
+
+getSid = function() {
+  var wordList = depromisify(sidGenerator.generate(sidOptions))
+  return wordList.join('-')
+}
 
 var formatter = require('./lib/formatter')
 
@@ -25,36 +39,61 @@ app.get('/', function(req, res) {
   })
 })
 
-io.sockets.on('connection', function(socket) {
+var worldConnections = {}
+
+var getNewWorldConnection = function() {
   var worldConnection = net.createConnection(target.port, target.host)
   worldConnection.setEncoding('utf8')
+  return worldConnection
+}
+
+io.sockets.on('connection', function(socket) {
+  var sessionId
 
   var log = function(message) {
     console.log(socket.id + ' : ' + message)
   }
 
-  log('connected to world ' + target.host + ':' + target.port)
-
-  worldConnection.addListener('data', function(data) {
-    socket.emit('message', createResponse('updateWorld', formatter.go(data)))
-  })
-
-  worldConnection.addListener('close', function() {
-    log('disconnected from world')
-    socket.disconnect()
-  })
-
-  socket.on('message', function(data) {
-    try {
-      worldConnection.write(data + '\n')
-    } catch(e) {
-      log('caught exception: ' + e)
+  socket.on('sessionId', function(clientSessionId) {
+    var worldConnection
+    log('got sessionId from client: ' + clientSessionId)
+    sessionId = clientSessionId
+    if (worldConnections[sessionId]) {
+      log('found existing world connection for sessionId, reattaching')
+      worldConnection = worldConnections[sessionId]
+    } else {
+      log('found no connection for sessionId, creating new connection')
+      worldConnection = getNewWorldConnection()
+      worldConnections[sessionId] = worldConnection
     }
-  })
 
-  socket.on('disconnect', function(data) {
-    log('disconnected from webclient')
-    worldConnection.destroy();
+    var handleData = function(data) {
+      socket.emit('message', createResponse('updateWorld', formatter.go(data)))
+    }
+
+    worldConnection.addListener('data', handleData)
+
+    var handleClose = function() {
+      log('disconnected from world')
+      socket.disconnect()
+      delete worldConnections[sessionId];
+    }
+
+    worldConnection.addListener('close', handleClose)
+
+    socket.on('message', function(data) {
+      try {
+        worldConnection.write(data + '\n')
+      } catch(e) {
+        log('caught exception: ' + e)
+      }
+    })
+
+    socket.on('disconnect', function(data) {
+      log('disconnected from webclient')
+      worldConnection.removeListener('data', handleData);
+      worldConnection.removeListener('close', handleClose);
+    })
   })
 })
 
