@@ -3,6 +3,7 @@ const path = require('path')
 const env = process.env.NODE_ENV
 
 module.exports = {
+  devtool: 'cheap-module-source-map',
   entry: {
     bundle: './public/js/app.js',
   },
@@ -11,8 +12,6 @@ module.exports = {
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
     publicPath: '/js',
-    devtoolModuleFilenameTemplate: info =>
-      path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
   },
   externals: {
     jquery: 'jQuery'
