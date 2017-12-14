@@ -1,3 +1,6 @@
+const $ = require('jquery')
+const World = require('./lib/world.js')
+
 $(function() {
   var world   = new World('#output-pane')
     , socket  = io.connect()

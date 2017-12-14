@@ -21,3 +21,5 @@ World.prototype.updateHistory = function(command) {
   this.history.push(command)
   this.current = this.history.length
 }
+
+module.exports = World

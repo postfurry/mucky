@@ -11,6 +11,10 @@ var config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
 
 var formatter = require('./lib/formatter')
 
+const webpackConfig = require('./webpack.config.js')
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 var createResponse = function(command, data) {
   return { command: command, data: data }
 }
@@ -18,6 +22,14 @@ var createResponse = function(command, data) {
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views')
 app.use(express.static(__dirname + '/public'))
+
+if (isDevelopment) {
+  const compiler = require('webpack')(webpackConfig);
+  app.use(require('webpack-dev-middleware')(compiler, {
+    publicPath: webpackConfig.output.publicPath,
+    quiet: true
+  }));
+}
 
 app.get('/', function(req, res) {
   res.render('index.ejs', {
