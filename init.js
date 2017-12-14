@@ -29,12 +29,6 @@ if (isDevelopment) {
   }));
 }
 
-// app.get('/', function(req, res) {
-//   res.render('index.ejs', {
-//     worldName: target.name
-//   })
-// })
-
 var sessions = {}
 
 var getNewWorldConnection = function() {
