@@ -1,12 +1,12 @@
 const path = require('path')
 
 const env = process.env.NODE_ENV
-const appSrc = path.resolve(__dirname, 'public/js')
+const appSrc = path.resolve(__dirname, 'frontend')
 
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: {
-    bundle: './public/js/app.js',
+    bundle: './frontend/index.js',
   },
   output: {
     path: appSrc,
@@ -27,6 +27,7 @@ module.exports = {
             loader: require.resolve('babel-loader'),
             options: {
               presets: [require.resolve('babel-preset-env')],
+              plugins: [require.resolve('babel-plugin-transform-react-jsx')],
             },
           },
         ]

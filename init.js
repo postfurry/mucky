@@ -19,8 +19,6 @@ var createResponse = function(command, data) {
   return { command: command, data: data }
 }
 
-app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views')
 app.use(express.static(__dirname + '/public'))
 
 if (isDevelopment) {
@@ -31,11 +29,11 @@ if (isDevelopment) {
   }));
 }
 
-app.get('/', function(req, res) {
-  res.render('index.ejs', {
-    worldName: target.name
-  })
-})
+// app.get('/', function(req, res) {
+//   res.render('index.ejs', {
+//     worldName: target.name
+//   })
+// })
 
 var sessions = {}
 
