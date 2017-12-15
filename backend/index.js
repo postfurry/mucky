@@ -1,52 +1,50 @@
-var fs      = require('fs')
-  , net     = require('net')
-  , http    = require('http')
-  , path    = require('path')
-  , express = require('express')
+const fs = require('fs')
+const net = require('net')
+const http = require('http')
+const path = require('path')
+const express = require('express')
 
-var config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
-  , target = config.target
-  , app    = express()
-  , server = http.createServer(app)
-  , io     = require('socket.io')(server)
+const config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
+const target = config.target
+const app = express()
+const server = http.createServer(app)
+const io = require('socket.io')(server)
 
 const webpackConfig = require('../frontend/webpack.config.js')
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV !== 'production'
 const frontendSrc = path.resolve(__dirname, '..', 'frontend')
 
-var createResponse = function(command, data) {
-  return { command: command, data: data }
-}
-
 if (isDevelopment) {
-  const compiler = require('webpack')(webpackConfig);
-  app.use(require('webpack-dev-middleware')(compiler, {
-    publicPath: webpackConfig.output.publicPath,
-    quiet: true
-  }));
+  const compiler = require('webpack')(webpackConfig)
+  app.use(
+    require('webpack-dev-middleware')(compiler, {
+      publicPath: webpackConfig.output.publicPath,
+      quiet: true
+    })
+  )
 } else {
   app.use(express.static(path.resolve(frontendSrc, 'build')))
 }
 app.use(express.static(path.resolve(frontendSrc, 'public')))
 
-var sessions = {}
+let sessions = {}
 
-var getNewWorldConnection = function() {
-  var worldConnection = net.createConnection(target.port, target.host)
+let getNewWorldConnection = function() {
+  let worldConnection = net.createConnection(target.port, target.host)
   worldConnection.setEncoding('utf8')
   return worldConnection
 }
 
 io.sockets.on('connection', function(socket) {
-  var sessionId
+  let sessionId
 
-  var log = function(message) {
+  let log = function(message) {
     console.log(socket.id + ' : ' + message)
   }
 
   socket.on('sessionId', function(clientSessionId) {
-    var worldConnection
+    let worldConnection
     log('got sessionId from client: ' + clientSessionId)
     sessionId = clientSessionId
     if (sessions[sessionId]) {
@@ -70,13 +68,13 @@ io.sockets.on('connection', function(socket) {
     // maybe?). So we normalize all that by reading into a buffer until we see
     // a read that ends in a newline, and THEN split it all by newlines and send
     // to the client one line at a time.
-    var serverBuffer = ''
+    let serverBuffer = ''
 
-    var handleData = function(data) {
+    let handleData = function(data) {
       serverBuffer += data
-      const lastByte = data[data.length-1]
+      const lastByte = data[data.length - 1]
       if (lastByte === '\n') {
-        serverBuffer.split('\n').forEach((line) => {
+        serverBuffer.split('\n').forEach(line => {
           socket.emit('worldLine', line)
         })
         serverBuffer = ''
@@ -85,10 +83,10 @@ io.sockets.on('connection', function(socket) {
 
     worldConnection.addListener('data', handleData)
 
-    var handleClose = function() {
+    let handleClose = function() {
       log('disconnected from world, closing session ' + sessionId)
       socket.disconnect()
-      delete sessions[sessionId];
+      delete sessions[sessionId]
     }
 
     worldConnection.addListener('close', handleClose)
@@ -96,7 +94,7 @@ io.sockets.on('connection', function(socket) {
     socket.on('worldInput', function(data) {
       try {
         worldConnection.write(data + '\n')
-      } catch(e) {
+      } catch (e) {
         log('caught exception: ' + e)
       }
     })
@@ -107,8 +105,8 @@ io.sockets.on('connection', function(socket) {
         sessions[sessionId].sockets--
         sessions[sessionId].lastActive = new Date()
       }
-      worldConnection.removeListener('data', handleData);
-      worldConnection.removeListener('close', handleClose);
+      worldConnection.removeListener('data', handleData)
+      worldConnection.removeListener('close', handleClose)
     })
   })
 })
@@ -117,10 +115,13 @@ const staleSessionMilliseconds = 60 * 1000
 
 // We only want to keep detached sessions around briefly, so we poll for
 // detached sessions with no activity in the last minute, and close them.
-setInterval(function(){
-  Object.keys(sessions).forEach(function(sessionId){
-    var session = sessions[sessionId]
-    if (!session.sockets && new Date - session.lastActive > staleSessionMilliseconds) {
+setInterval(function() {
+  Object.keys(sessions).forEach(function(sessionId) {
+    let session = sessions[sessionId]
+    if (
+      !session.sockets &&
+      new Date() - session.lastActive > staleSessionMilliseconds
+    ) {
       console.log('Pruning stale orphan session: ' + sessionId)
       session.connection.destroy()
       delete sessions[sessionId]

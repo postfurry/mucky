@@ -19,7 +19,7 @@ export default class App extends Component {
     this.socket = io.connect()
 
     this.socket.on('connect', () => {
-      var sessionId = Cookie.get('sessionId')
+      let sessionId = Cookie.get('sessionId')
       if (!sessionId) {
         sessionId = uuidv4()
         Cookie.set('sessionId', sessionId)
@@ -27,23 +27,27 @@ export default class App extends Component {
       this.socket.emit('sessionId', sessionId)
     })
 
-    this.socket.on('worldLine', (line) => {
+    this.socket.on('worldLine', line => {
       this.setState({
-        scrollback: this.state.scrollback.concat([{
-          type: 'world',
-          data: line,
-          timestamp: new Date()
-        }])
+        scrollback: this.state.scrollback.concat([
+          {
+            type: 'world',
+            data: line,
+            timestamp: new Date()
+          }
+        ])
       })
     })
 
     this.socket.on('disconnect', () => {
       this.setState({
-        scrollback: this.state.scrollback.concat([{
-          type: 'system',
-          data: 'Connection closed',
-          timestamp: new Date()
-        }])
+        scrollback: this.state.scrollback.concat([
+          {
+            type: 'system',
+            data: 'Connection closed',
+            timestamp: new Date()
+          }
+        ])
       })
     })
   }
@@ -53,10 +57,10 @@ export default class App extends Component {
   }
 
   handleChange = () => {
-    this.setState({inputBuffer: event.target.value})
+    this.setState({ inputBuffer: event.target.value })
   }
 
-  handleKeyDown = (event) => {
+  handleKeyDown = event => {
     let newHistoryPos
     switch (event.keyCode) {
       case 13:
@@ -65,19 +69,23 @@ export default class App extends Component {
         this.socket.emit('worldInput', message)
         this.setState({
           inputBuffer: '',
-          scrollback: this.state.scrollback.concat([{
-            type: 'self',
-            data: message,
-            timestamp: new Date()
-          }]),
+          scrollback: this.state.scrollback.concat([
+            {
+              type: 'self',
+              data: message,
+              timestamp: new Date()
+            }
+          ]),
           history: this.state.history.concat([message]),
           historyPos: this.state.historyPos + 1
         })
         return
       case 38:
         newHistoryPos = this.state.historyPos - 1
-        if (event.target.selectionStart === 0 &&
-            this.state.history[newHistoryPos]) {
+        if (
+          event.target.selectionStart === 0 &&
+          this.state.history[newHistoryPos]
+        ) {
           event.preventDefault()
           this.setState({
             inputBuffer: this.state.history[newHistoryPos],
@@ -87,8 +95,10 @@ export default class App extends Component {
         return
       case 40:
         newHistoryPos = this.state.historyPos + 1
-        if (event.target.selectionStart === this.state.inputBuffer.length &&
-            this.state.history[this.state.historyPos]) {
+        if (
+          event.target.selectionStart === this.state.inputBuffer.length &&
+          this.state.history[this.state.historyPos]
+        ) {
           event.preventDefault()
           this.setState({
             inputBuffer: this.state.history[newHistoryPos],
@@ -100,22 +110,31 @@ export default class App extends Component {
   }
 
   render() {
-    return (<div className="app">
-      <div className="banner">
-        <a target="_blank" href="http://postfurry.net/muck">PFMuck</a> WebClient &alpha;
-        &middot; Experimental code &middot;
-        Report issues on the Discord server or {' '}
-        <a target="_blank" href="https://github.com/postfurry/mucky/issues">Github</a>
+    return (
+      <div className="app">
+        <div className="banner">
+          <a target="_blank" href="http://postfurry.net/muck">
+            PFMuck
+          </a>{' '}
+          WebClient &alpha; &middot; Experimental code &middot; Report issues on
+          the Discord server or{' '}
+          <a target="_blank" href="https://github.com/postfurry/mucky/issues">
+            Github
+          </a>
+        </div>
+        <OutputPane scrollback={this.state.scrollback} />
+        <div className="input-pane">
+          <textarea
+            ref={el => {
+              this.inputField = el
+            }}
+            value={this.state.inputBuffer}
+            onKeyDown={this.handleKeyDown}
+            onKeyUp={this.handleChange}
+            onChange={this.handleChange}
+          />
+        </div>
       </div>
-      <OutputPane scrollback={this.state.scrollback} />
-      <div className="input-pane">
-        <textarea ref={(el) => { this.inputField = el }}
-          value={this.state.inputBuffer}
-          onKeyDown={this.handleKeyDown}
-          onKeyUp={this.handleChange}
-          onChange={this.handleChange}
-        />
-      </div>
-    </div>)
+    )
   }
 }

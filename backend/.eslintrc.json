@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "standard",
+    "../.eslintrc.json"
+  ],
+  "env": {
+    "node": true,
+    "es6": true
+  }
+}

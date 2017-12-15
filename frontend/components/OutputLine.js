@@ -13,8 +13,10 @@ export default class OutputLine extends Component {
   render() {
     const className = classNames('output-line', this.props.type)
 
-    return (<div className={className} title={this.timestamp}>
-      <Linkify>{this.noAnsiData}</Linkify>
-    </div>)
+    return (
+      <div className={className} title={this.timestamp}>
+        <Linkify>{this.noAnsiData}</Linkify>
+      </div>
+    )
   }
 }

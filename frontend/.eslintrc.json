@@ -1,13 +1,17 @@
 {
-  "extends": ["standard-preact"],
+  "extends": [
+    "standard-preact",
+    "../.eslintrc.json",
+    "prettier/react"
+  ],
   "rules": {
-    "semi": [ "error", "never" ],
-    "quotes": [ "error", "single" ],
-    "jsx-quotes": [ "error", "prefer-double" ],
     "react/self-closing-comp": ["error", {
       "component": true,
       "html": true
     }],
     "react/jsx-tag-spacing": "error"
+  },
+  "env": {
+    "browser": true
   }
 }
