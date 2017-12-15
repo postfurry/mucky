@@ -16,7 +16,7 @@ export default class App extends Component {
       scrollback: [],
       history: [],
       historyPos: 0,
-      showLogin: false,
+      bottomPanel: 'input',
       username: '',
       password: ''
     }
@@ -32,12 +32,7 @@ export default class App extends Component {
       this.socket.emit('sessionId', sessionId)
     })
 
-    this.socket.on('worldLine', line => {
-      console.log(line)
-      if (this.state.showLogin && line.startsWith(LOGIN_STRING)) {
-        this.didLogin()
-        return
-      }
+    this.socket.on('worldLine', (line) => {
       this.setState({
         scrollback: this.state.scrollback.concat([
           {
@@ -49,14 +44,23 @@ export default class App extends Component {
       })
     })
 
+    this.socket.on('worldSignal', (signal) => {
+      if (signal.startsWith('Login? (connect [username] [password])')) {
+        this.showLoginPane()
+      } else if (signal.startsWith('Login successful!')) {
+        this.showInputPane()
+      } else {
+        console.log('Unrecognized signal:', signal)
+      }
+    })
+
     this.socket.on('newConnection', () => {
-      this.setState({
-        showLogin: true
-      })
+      this.showLoginPane()
     })
 
     this.socket.on('disconnect', () => {
       this.setState({
+<<<<<<< HEAD
         scrollback: this.state.scrollback.concat([
           {
             type: 'system',
@@ -64,12 +68,25 @@ export default class App extends Component {
             timestamp: new Date()
           }
         ])
+=======
+        bottomPanel: 'connect',
+        scrollback: this.state.scrollback.concat([{
+          type: 'system',
+          data: 'Connection closed',
+          timestamp: new Date()
+        }])
+>>>>>>> Handle login/input/reconnect states predictably
       })
     })
   }
 
-  didLogin() {
+  componentDidMount() {
+    this.inputField.focus()
+  }
+
+  showLoginPane() {
     this.setState({
+<<<<<<< HEAD
       scrollback: this.state.scrollback.concat([
         {
           type: 'system',
@@ -78,18 +95,35 @@ export default class App extends Component {
         }
       ]),
       showLogin: false
+=======
+      bottomPanel: 'login'
+    }, () => {
+      this.loginField.focus()
+>>>>>>> Handle login/input/reconnect states predictably
     })
   }
 
-  componentDidMount() {
-    this.inputField.focus()
+  showInputPane() {
+    this.setState({
+      bottomPanel: 'input'
+    }, () => {
+      this.inputField.focus()
+    })
   }
 
+<<<<<<< HEAD
   handleLogin = event => {
+=======
+  doLogin = (event) => {
+>>>>>>> Handle login/input/reconnect states predictably
     event.preventDefault()
     if (this.state.username && this.state.password) {
       this.socket.emit('login', this.state.username, this.state.password)
     }
+  }
+
+  doReconnect = () => {
+    window.location.reload()
   }
 
   handleChange(property) {
@@ -102,7 +136,15 @@ export default class App extends Component {
     this.setState({ inputBuffer: event.target.value })
   }
 
+<<<<<<< HEAD
   handleInputKeyDown = event => {
+=======
+  listUsers = () => {
+    this.socket.emit('worldInput', 'WHO')
+  }
+
+  handleInputKeyDown = (event) => {
+>>>>>>> Handle login/input/reconnect states predictably
     let newHistoryPos
     switch (event.keyCode) {
       case 13:
@@ -152,6 +194,7 @@ export default class App extends Component {
   }
 
   render() {
+<<<<<<< HEAD
     return (
       <div className="app">
         <div className="banner">
@@ -185,11 +228,40 @@ export default class App extends Component {
               onChange={this.handleChange('password')}
             />
             {/* <input name="save" id="save-login"
+=======
+    return (<div className="app">
+      <div className="banner">
+        <a target="_blank" href="http://postfurry.net/muck">PFMuck</a> WebClient &alpha;
+        &middot; Experimental code &middot;
+        Report issues on the Discord server or {' '}
+        <a target="_blank" href="https://github.com/postfurry/mucky/issues">Github</a>
+      </div>
+      <OutputPane scrollback={this.state.scrollback} />
+      { this.state.bottomPanel === 'login' ?
+        <form className="login-pane" onSubmit={this.doLogin}>
+          <input name="username" id="username"
+            ref={(el) => { this.loginField = el }}
+            className="login-info"
+            placeholder="username"
+            maxLength="16"
+            value={this.state.username}
+            onChange={this.handleChange('username')}
+          />
+          <input name="password"
+            className="login-info"
+            placeholder="password"
+            type="password"
+            value={this.state.password}
+            onChange={this.handleChange('password')}
+          />
+          {/* <input name="save" id="save-login"
+>>>>>>> Handle login/input/reconnect states predictably
             className="checkbox"
             type="checkbox"
             value={this.state.saveLogin}
           />
           <label for="save-login">Save?</label> */}
+<<<<<<< HEAD
             <input type="submit" className="login-button" value="Login" />
           </form>
         ) : (
@@ -207,5 +279,27 @@ export default class App extends Component {
         )}
       </div>
     )
+=======
+          <input type="submit" className="button" value="Login" />
+          <button onClick={this.listUsers}>Who's online?</button>
+        </form>
+      : null }
+      { this.state.bottomPanel === 'input' ?
+        <div className="input-pane">
+          <textarea ref={(el) => { this.inputField = el }}
+            value={this.state.inputBuffer}
+            onKeyDown={this.handleInputKeyDown}
+            onKeyUp={this.handleInputChange}
+            onChange={this.handleInputChange}
+          />
+        </div>
+      : null }
+      { this.state.bottomPanel === 'connect' ?
+        <div className="reconnect-pane">
+          <button onClick={this.doReconnect}>Connect</button>
+        </div>
+      : null }
+    </div>)
+>>>>>>> Handle login/input/reconnect states predictably
   }
 }

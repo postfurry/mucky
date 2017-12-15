@@ -15,6 +15,13 @@ const webpackConfig = require('../frontend/webpack.config.js')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const frontendSrc = path.resolve(__dirname, '..', 'frontend')
 
+var createResponse = function(command, data) {
+  return { command: command, data: data }
+}
+
+// String to watch for from the server that tells us we're getting a signal from the client
+var SIGNAL_MARKER = '>>> '
+
 if (isDevelopment) {
   const compiler = require('webpack')(webpackConfig)
   app.use(
@@ -75,8 +82,17 @@ io.sockets.on('connection', function(socket) {
       serverBuffer += data
       const lastByte = data[data.length - 1]
       if (lastByte === '\n') {
+<<<<<<< HEAD
         serverBuffer.split('\n').forEach(line => {
           socket.emit('worldLine', line)
+=======
+        serverBuffer.split('\n').forEach((line) => {
+          if (line.startsWith(SIGNAL_MARKER)) {
+            socket.emit('worldSignal', line.replace(SIGNAL_MARKER, '').replace('\n', ''))
+          } else {
+            socket.emit('worldLine', line)
+          }
+>>>>>>> Handle login/input/reconnect states predictably
         })
         serverBuffer = ''
       }
