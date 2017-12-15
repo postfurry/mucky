@@ -16,7 +16,10 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 const frontendSrc = path.resolve(__dirname, '..', 'frontend')
 
 // String to watch for from the server that tells us we're getting a signal from the client
-let SIGNAL_MARKER = '>>> '
+const SIGNAL_MARKER = '>>> '
+
+// Store this many lines from the session and replay them when reconnecting to it
+const SERVER_SCROLLBACK = '50'
 
 if (isDevelopment) {
   const compiler = require('webpack')(webpackConfig)
@@ -47,6 +50,14 @@ io.sockets.on('connection', function(socket) {
   }
 
   socket.on('sessionId', function(clientSessionId) {
+    const sendLine = function(line) {
+      if (line.startsWith(SIGNAL_MARKER)) {
+        socket.emit('worldSignal', line.replace(SIGNAL_MARKER, ''))
+      } else {
+        socket.emit('worldLine', line)
+      }
+    }
+
     let worldConnection
     log('got sessionId from client: ' + clientSessionId)
     sessionId = clientSessionId
@@ -54,13 +65,17 @@ io.sockets.on('connection', function(socket) {
       log('found existing world connection for sessionId, reattaching')
       worldConnection = sessions[sessionId].connection
       sessions[sessionId].sockets++
+      socket.emit('worldSignal', 'Beginning reattach replay')
+      sessions[sessionId].scrollback.forEach(sendLine)
+      socket.emit('worldSignal', 'Reconnected to session')
     } else {
       log('found no connection for sessionId, creating new connection')
       worldConnection = getNewWorldConnection()
       sessions[sessionId] = {
         connection: worldConnection,
         lastActive: new Date(),
-        sockets: 1
+        sockets: 1,
+        scrollback: []
       }
       socket.emit('newConnection')
     }
@@ -74,17 +89,17 @@ io.sockets.on('connection', function(socket) {
     // to the client one line at a time.
     let serverBuffer = ''
 
-    let handleData = function(data) {
+    const handleData = function(data) {
       serverBuffer += data
       const lastByte = data[data.length - 1]
       if (lastByte === '\n') {
         serverBuffer.split('\n').forEach(line => {
-          if (line.startsWith(SIGNAL_MARKER)) {
-            socket.emit('worldSignal', line.replace(SIGNAL_MARKER, ''))
-          } else {
-            socket.emit('worldLine', line)
-          }
+          sessions[sessionId].scrollback.push(line)
+          sendLine(line)
         })
+        sessions[sessionId].scrollback = sessions[sessionId].scrollback.slice(
+          -SERVER_SCROLLBACK
+        )
         serverBuffer = ''
       }
     }

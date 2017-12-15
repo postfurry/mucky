@@ -58,7 +58,15 @@ export default class App extends Component {
         window.localStorage.setItem('muckPassword', this.state.password)
         this.showInputPane()
       } else {
-        console.log('Unrecognized signal:', signal)
+        this.setState({
+          scrollback: this.state.scrollback.concat([
+            {
+              type: 'system',
+              data: signal,
+              timestamp: new Date()
+            }
+          ])
+        })
       }
     })
 
