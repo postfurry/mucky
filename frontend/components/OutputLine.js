@@ -1,5 +1,6 @@
 import { h, Component } from 'preact'
 import classNames from 'classnames'
+import Linkify from 'react-Linkify'
 
 export default class OutputLine extends Component {
   constructor(props) {
@@ -10,7 +11,7 @@ export default class OutputLine extends Component {
     const className = classNames('output-line', this.props.type)
 
     return (<div className={className} title={this.props.timestamp}>
-      {this.noAnsiData}
+      <Linkify>{this.noAnsiData}</Linkify>
     </div>)
   }
 }
