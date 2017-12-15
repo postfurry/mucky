@@ -15,8 +15,8 @@ export default class App extends Component {
       history: [],
       historyPos: 0,
       bottomPanel: 'input',
-      username: '',
-      password: ''
+      username: window.localStorage.getItem('muckUsername') || '',
+      password: window.localStorage.getItem('muckPassword') || ''
     }
 
     this.socket = io.connect()
@@ -46,6 +46,8 @@ export default class App extends Component {
       if (signal.startsWith('Login? (connect [username] [password])')) {
         this.showLoginPane()
       } else if (signal.startsWith('Login successful!')) {
+        window.localStorage.setItem('muckUsername', this.state.username)
+        window.localStorage.setItem('muckPassword', this.state.password)
         this.showInputPane()
       } else {
         console.log('Unrecognized signal:', signal)
@@ -118,7 +120,8 @@ export default class App extends Component {
     this.setState({ inputBuffer: event.target.value })
   }
 
-  listUsers = () => {
+  listUsers = event => {
+    event.preventDefault()
     this.socket.emit('worldInput', 'WHO')
   }
 
@@ -207,12 +210,6 @@ export default class App extends Component {
               value={this.state.password}
               onChange={this.handleChange('password')}
             />
-            {/* <input name="save" id="save-login"
-            className="checkbox"
-            type="checkbox"
-            value={this.state.saveLogin}
-            />
-            <label for="save-login">Save?</label> */}
             <input type="submit" className="button" value="Login" />
             <button onClick={this.listUsers}>Who's online?</button>
           </form>
