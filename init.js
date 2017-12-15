@@ -9,8 +9,6 @@ var config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
   , server = http.createServer(app)
   , io     = require('socket.io')(server)
 
-var formatter = require('./lib/formatter')
-
 const webpackConfig = require('./webpack.config.js')
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -62,8 +60,24 @@ io.sockets.on('connection', function(socket) {
       }
     }
 
+    // It's much nicer for the client to present data one line at a time, and
+    // this usually works, but there are some edge-cases where the server sends
+    // multiple lines at once (like a non-logged-in WHO) and other cases where
+    // the server breaks off before sending a newline (Large amounts of data
+    // maybe?). So we normalize all that by reading into a buffer until we see
+    // a read that ends in a newline, and THEN split it all by newlines and send
+    // to the client one line at a time.
+    var serverBuffer = ''
+
     var handleData = function(data) {
-      socket.emit('message', createResponse('updateWorld', formatter.go(data)))
+      serverBuffer += data
+      const lastByte = data[data.length-1]
+      if (lastByte === '\n') {
+        serverBuffer.split('\n').forEach((line) => {
+          socket.emit('worldLine', line)
+        })
+        serverBuffer = ''
+      }
     }
 
     worldConnection.addListener('data', handleData)
@@ -76,7 +90,7 @@ io.sockets.on('connection', function(socket) {
 
     worldConnection.addListener('close', handleClose)
 
-    socket.on('message', function(data) {
+    socket.on('worldInput', function(data) {
       try {
         worldConnection.write(data + '\n')
       } catch(e) {

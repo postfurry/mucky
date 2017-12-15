@@ -27,19 +27,14 @@ export default class App extends Component {
       this.socket.emit('sessionId', sessionId)
     })
 
-    this.socket.on('message', (message) => {
-      var command = message.command
-        , data    = message.data
-
-      if (command == 'updateWorld') {
-        this.setState({
-          scrollback: this.state.scrollback.concat([{
-            type: 'world',
-            data: data,
-            timestamp: new Date()
-          }])
-        })
-      }
+    this.socket.on('worldLine', (line) => {
+      this.setState({
+        scrollback: this.state.scrollback.concat([{
+          type: 'world',
+          data: line,
+          timestamp: new Date()
+        }])
+      })
     })
 
     this.socket.on('disconnect', () => {
@@ -67,12 +62,12 @@ export default class App extends Component {
       case 13:
         event.preventDefault()
         const message = this.state.inputBuffer
-        this.socket.emit('message', message)
+        this.socket.emit('worldInput', message)
         this.setState({
           inputBuffer: '',
           scrollback: this.state.scrollback.concat([{
             type: 'self',
-            data: message + '\n',
+            data: message,
             timestamp: new Date()
           }]),
           history: this.state.history.concat([message]),
