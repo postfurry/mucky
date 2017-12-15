@@ -3,7 +3,7 @@ import io from 'socket.io-client'
 import Cookie from 'js-cookie'
 import uuidv4 from 'uuid/v4'
 
-import OutputLine from './OutputLine.js'
+import OutputPane from './OutputPane.js'
 
 /** @jsx h */
 
@@ -97,15 +97,7 @@ export default class App extends Component {
         Report issues on the Discord server or {' '}
         <a target="_blank" href="https://github.com/postfurry/mucky/issues">Github</a>
       </div>
-      <div className="output-pane">
-        { this.state.scrollback.map((line) => {
-          return <OutputLine
-            type={line.type}
-            data={line.data}
-            timestamp={line.timestamp}
-          />
-        }) }
-      </div>
+      <OutputPane scrollback={this.state.scrollback} />
       <div className="input-pane">
         <textarea
           value={this.state.inputBuffer}
