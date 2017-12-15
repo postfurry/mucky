@@ -1,13 +1,13 @@
 {
   "extends": ["standard-preact"],
   "rules": {
-    "semi": [ 2, "never" ],
-    "quotes": [ 2, "single" ],
-    "jsx-quotes": [ 2, "prefer-double" ],
+    "semi": [ "error", "never" ],
+    "quotes": [ "error", "single" ],
+    "jsx-quotes": [ "error", "prefer-double" ],
     "react/self-closing-comp": ["error", {
       "component": true,
       "html": true
     }],
-    "react/jsx-space-before-closing": [ 2 ]
+    "react/jsx-tag-spacing": "error"
   }
 }

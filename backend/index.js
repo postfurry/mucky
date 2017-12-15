@@ -1,6 +1,7 @@
 var fs      = require('fs')
   , net     = require('net')
   , http    = require('http')
+  , path    = require('path')
   , express = require('express')
 
 var config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
@@ -9,15 +10,14 @@ var config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
   , server = http.createServer(app)
   , io     = require('socket.io')(server)
 
-const webpackConfig = require('./webpack.config.js')
+const webpackConfig = require('../frontend/webpack.config.js')
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+const frontendSrc = path.resolve(__dirname, '..', 'frontend')
 
 var createResponse = function(command, data) {
   return { command: command, data: data }
 }
-
-app.use(express.static(__dirname + '/public'))
 
 if (isDevelopment) {
   const compiler = require('webpack')(webpackConfig);
@@ -25,7 +25,10 @@ if (isDevelopment) {
     publicPath: webpackConfig.output.publicPath,
     quiet: true
   }));
+} else {
+  app.use(express.static(path.resolve(frontendSrc, 'build')))
 }
+app.use(express.static(path.resolve(frontendSrc, 'public')))
 
 var sessions = {}
 
