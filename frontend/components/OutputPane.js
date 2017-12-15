@@ -2,8 +2,6 @@ import { h, Component } from 'preact'
 
 import OutputLine from './OutputLine.js'
 
-/** @jsx h */
-
 export default class OutputPane extends Component {
   constructor(props) {
     super(props)

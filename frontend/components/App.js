@@ -5,8 +5,6 @@ import uuidv4 from 'uuid/v4'
 
 import OutputPane from './OutputPane.js'
 
-/** @jsx h */
-
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -54,15 +52,15 @@ export default class App extends Component {
       })
     })
 
-    this.handleKeyDown = this.handleKeyDown.bind(this)
-    this.handleChange = this.handleChange.bind(this)
+    // this.handleKeyDown = this.handleKeyDown.bind(this)
+    // this.handleChange = this.handleChange.bind(this)
   }
 
-  handleChange(event) {
+  handleChange = () => {
     this.setState({inputBuffer: event.target.value})
   }
 
-  handleKeyDown(event) {
+  handleKeyDown = (event) => {
     let newHistoryPos
     switch (event.keyCode) {
       case 13:

@@ -1,8 +1,6 @@
 import { h, Component } from 'preact'
 import classNames from 'classnames'
 
-/** @jsx h */
-
 export default class OutputLine extends Component {
   render() {
     const className = classNames('output-line', this.props.type)

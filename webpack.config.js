@@ -29,8 +29,8 @@ module.exports = {
             include: appSrc,
             loader: require.resolve('babel-loader'),
             options: {
-              presets: [require.resolve('babel-preset-env')],
-              plugins: [require.resolve('babel-plugin-transform-react-jsx')],
+              presets: [require.resolve('babel-preset-env'), require.resolve('babel-preset-stage-2')],
+              plugins: [[require.resolve('babel-plugin-transform-react-jsx'), { "pragma":"h" }]],
             },
           },
           {
