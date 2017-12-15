@@ -13,7 +13,7 @@ This was written for and tested on FuzzBall 6 MUCKs, but should basically work w
 
 ## Non-features
 
-- ANSI color (See [#18](https://github.com/postfurry/mucky/issues/18)
+- ANSI color (See [#18](https://github.com/postfurry/mucky/issues/18))
 
 ## Installation
 
