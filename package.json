@@ -9,6 +9,7 @@
     "ejs": "^2.5.5",
     "express": "^4.14.0",
     "js-cookie": "^2.2.0",
+    "moment": "^2.19.4",
     "preact": "^8.2.7",
     "preact-compat": "^3.17.0",
     "react-linkify": "^0.2.1",
