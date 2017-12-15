@@ -25,6 +25,40 @@
     flex: 1 1 auto;
   }
 
+  .login-pane {
+    flex: 0 0 auto;
+    padding: 10px;
+    background: $darker;
+
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+
+    input {
+      border: $darker;
+      background: $darker;
+      color: $lightest;
+      font-family: "Source Code Pro";
+      font-size: 20px;
+      padding: 0;
+      margin: 0 0.5em 0 0;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    input.login-info {
+      width: 10em;
+    }
+
+    input.login-button {
+      text-decoration: underline;
+      font-weight: bold;
+      margin-left: 1em;
+    }
+  }
+
   .input-pane {
     flex: 0 0 auto;
     padding: 10px;

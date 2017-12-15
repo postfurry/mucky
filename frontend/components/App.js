@@ -13,7 +13,10 @@ export default class App extends Component {
       inputBuffer: '',
       scrollback: [],
       history: [],
-      historyPos: 0
+      historyPos: 0,
+      showLogin: false,
+      username: '',
+      password: ''
     }
 
     this.socket = io.connect()
@@ -40,9 +43,9 @@ export default class App extends Component {
     })
 
     this.socket.on('newConnection', () => {
-      const username = prompt('Username?')
-      const password = prompt('Password?')
-      this.socket.emit('login', username, password)
+      this.setState({
+        showLogin: true
+      })
     })
 
     this.socket.on('disconnect', () => {
@@ -62,11 +65,28 @@ export default class App extends Component {
     this.inputField.focus()
   }
 
-  handleChange = () => {
+  handleLogin = event => {
+    event.preventDefault()
+    if (this.state.username && this.state.password) {
+      this.socket.emit('login', this.state.username, this.state.password)
+      // TODO: This should only happen after we've confirmed a successful login
+      this.setState({
+        showLogin: false
+      })
+    }
+  }
+
+  handleChange(property) {
+    return event => {
+      this.setState({ [property]: event.target.value })
+    }
+  }
+
+  handleInputChange = () => {
     this.setState({ inputBuffer: event.target.value })
   }
 
-  handleKeyDown = event => {
+  handleInputKeyDown = event => {
     let newHistoryPos
     switch (event.keyCode) {
       case 13:
@@ -129,17 +149,46 @@ export default class App extends Component {
           </a>
         </div>
         <OutputPane scrollback={this.state.scrollback} />
-        <div className="input-pane">
-          <textarea
-            ref={el => {
-              this.inputField = el
-            }}
-            value={this.state.inputBuffer}
-            onKeyDown={this.handleKeyDown}
-            onKeyUp={this.handleChange}
-            onChange={this.handleChange}
+        {this.state.showLogin ? (
+          <form className="login-pane" onSubmit={this.handleLogin}>
+            <input
+              name="username"
+              id="username"
+              className="login-info"
+              placeholder="username"
+              maxLength="16"
+              value={this.state.username}
+              onChange={this.handleChange('username')}
+            />
+            <input
+              name="password"
+              className="login-info"
+              placeholder="password"
+              type="password"
+              value={this.state.password}
+              onChange={this.handleChange('password')}
+            />
+            {/* <input name="save" id="save-login"
+            className="checkbox"
+            type="checkbox"
+            value={this.state.saveLogin}
           />
-        </div>
+          <label for="save-login">Save?</label> */}
+            <input type="submit" className="login-button" value="Login" />
+          </form>
+        ) : (
+          <div className="input-pane">
+            <textarea
+              ref={el => {
+                this.inputField = el
+              }}
+              value={this.state.inputBuffer}
+              onKeyDown={this.handleInputKeyDown}
+              onKeyUp={this.handleInputChange}
+              onChange={this.handleInputChange}
+            />
+          </div>
+        )}
       </div>
     )
   }
