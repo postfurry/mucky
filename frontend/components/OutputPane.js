@@ -3,12 +3,7 @@ import { h, Component } from 'preact'
 import OutputLine from './OutputLine.js'
 
 export default class OutputPane extends Component {
-  constructor(props) {
-    super(props)
-    this.scrollToBottom = this.scrollToBottom.bind(this)
-  }
-
-  scrollToBottom() {
+  scrollToBottom = () => {
     this.outputEnd.scrollIntoView()
   }
 

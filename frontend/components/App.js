@@ -51,9 +51,10 @@ export default class App extends Component {
         }])
       })
     })
+  }
 
-    // this.handleKeyDown = this.handleKeyDown.bind(this)
-    // this.handleChange = this.handleChange.bind(this)
+  componentDidMount() {
+    this.inputField.focus()
   }
 
   handleChange = () => {
@@ -80,11 +81,9 @@ export default class App extends Component {
         return
       case 38:
         newHistoryPos = this.state.historyPos - 1
-        console.log('up arrow', newHistoryPos, this.state.history)
         if (event.target.selectionStart === 0 &&
             this.state.history[newHistoryPos]) {
           event.preventDefault()
-          console.log('go previous')
           this.setState({
             inputBuffer: this.state.history[newHistoryPos],
             historyPos: newHistoryPos
@@ -93,11 +92,9 @@ export default class App extends Component {
         return
       case 40:
         newHistoryPos = this.state.historyPos + 1
-        console.log('down arrow', newHistoryPos, this.state.history)
         if (event.target.selectionStart === this.state.inputBuffer.length &&
             this.state.history[this.state.historyPos]) {
           event.preventDefault()
-          console.log('go next')
           this.setState({
             inputBuffer: this.state.history[newHistoryPos],
             historyPos: newHistoryPos
@@ -117,7 +114,7 @@ export default class App extends Component {
       </div>
       <OutputPane scrollback={this.state.scrollback} />
       <div className="input-pane">
-        <textarea
+        <textarea ref={(el) => { this.inputField = el }}
           value={this.state.inputBuffer}
           onKeyDown={this.handleKeyDown}
           onKeyUp={this.handleChange}
