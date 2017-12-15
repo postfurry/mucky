@@ -5,6 +5,8 @@ import uuidv4 from 'uuid/v4'
 
 import OutputPane from './OutputPane.js'
 
+const LOGIN_STRING = '>>> Login successful!'
+
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -31,6 +33,11 @@ export default class App extends Component {
     })
 
     this.socket.on('worldLine', line => {
+      console.log(line)
+      if (this.state.showLogin && line.startsWith(LOGIN_STRING)) {
+        this.didLogin()
+        return
+      }
       this.setState({
         scrollback: this.state.scrollback.concat([
           {
@@ -61,6 +68,19 @@ export default class App extends Component {
     })
   }
 
+  didLogin() {
+    this.setState({
+      scrollback: this.state.scrollback.concat([
+        {
+          type: 'system',
+          data: LOGIN_STRING,
+          timestamp: new Date()
+        }
+      ]),
+      showLogin: false
+    })
+  }
+
   componentDidMount() {
     this.inputField.focus()
   }
@@ -69,10 +89,6 @@ export default class App extends Component {
     event.preventDefault()
     if (this.state.username && this.state.password) {
       this.socket.emit('login', this.state.username, this.state.password)
-      // TODO: This should only happen after we've confirmed a successful login
-      this.setState({
-        showLogin: false
-      })
     }
   }
 
