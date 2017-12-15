@@ -70,10 +70,6 @@ export default class App extends Component {
       }
     })
 
-    this.socket.on('newConnection', () => {
-      this.showLoginPane()
-    })
-
     this.socket.on('disconnect', () => {
       window.removeEventListener('beforeunload', confirmClose)
       this.setState({
@@ -133,7 +129,7 @@ export default class App extends Component {
     }
   }
 
-  handleInputChange = () => {
+  handleInputChange = event => {
     this.setState({ inputBuffer: event.target.value })
   }
 
@@ -147,6 +143,7 @@ export default class App extends Component {
     switch (event.keyCode) {
       case 13:
         event.preventDefault()
+        this.handleInputChange(event)
         const message = this.state.inputBuffer
         this.socket.emit('worldInput', message)
         this.setState({
@@ -239,8 +236,6 @@ export default class App extends Component {
               }}
               value={this.state.inputBuffer}
               onKeyDown={this.handleInputKeyDown}
-              onKeyUp={this.handleInputChange}
-              onChange={this.handleInputChange}
             />
           </div>
         ) : null}
