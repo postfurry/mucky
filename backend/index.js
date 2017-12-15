@@ -59,6 +59,7 @@ io.sockets.on('connection', function(socket) {
         lastActive: new Date(),
         sockets: 1
       }
+      socket.emit('newConnection')
     }
 
     // It's much nicer for the client to present data one line at a time, and
@@ -90,6 +91,14 @@ io.sockets.on('connection', function(socket) {
     }
 
     worldConnection.addListener('close', handleClose)
+
+    socket.on('login', function(username, password) {
+      try {
+        worldConnection.write(`connect ${username} ${password}\n`)
+      } catch(e) {
+        log('caught exception: ' + e)
+      }
+    })
 
     socket.on('worldInput', function(data) {
       try {

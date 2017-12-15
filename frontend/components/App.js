@@ -39,6 +39,12 @@ export default class App extends Component {
       })
     })
 
+    this.socket.on('newConnection', () => {
+      const username = prompt('Username?')
+      const password = prompt('Password?')
+      this.socket.emit('login', username, password)
+    })
+
     this.socket.on('disconnect', () => {
       this.setState({
         scrollback: this.state.scrollback.concat([
