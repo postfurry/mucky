@@ -15,7 +15,7 @@ export default class OutputLine extends Component {
 
     return (
       <div className={className} title={this.timestamp}>
-        <Linkify>{this.noAnsiData}</Linkify>
+        <Linkify properties={{ target: '_blank' }}>{this.noAnsiData}</Linkify>
       </div>
     )
   }

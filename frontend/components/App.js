@@ -5,6 +5,13 @@ import uuidv4 from 'uuid/v4'
 
 import OutputPane from './OutputPane.js'
 
+const confirmClose = function(event) {
+  const confirmationMessage = 'Are you sure you want to disconnect?'
+
+  event.returnValue = confirmationMessage
+  return confirmationMessage
+}
+
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -46,6 +53,7 @@ export default class App extends Component {
       if (signal.startsWith('Login? (connect [username] [password])')) {
         this.showLoginPane()
       } else if (signal.startsWith('Login successful!')) {
+        window.addEventListener('beforeunload', confirmClose)
         window.localStorage.setItem('muckUsername', this.state.username)
         window.localStorage.setItem('muckPassword', this.state.password)
         this.showInputPane()
@@ -59,6 +67,7 @@ export default class App extends Component {
     })
 
     this.socket.on('disconnect', () => {
+      window.removeEventListener('beforeunload', confirmClose)
       this.setState({
         bottomPanel: 'connect',
         scrollback: this.state.scrollback.concat([
