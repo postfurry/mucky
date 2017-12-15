@@ -13,7 +13,9 @@ export default class App extends Component {
 
     this.state = {
       inputBuffer: '',
-      scrollback: []
+      scrollback: [],
+      history: [],
+      historyPos: 0
     }
 
     this.socket = io.connect()
@@ -61,29 +63,47 @@ export default class App extends Component {
   }
 
   handleKeyDown(event) {
+    let newHistoryPos
     switch (event.keyCode) {
       case 13:
         event.preventDefault()
-        this.socket.emit('message', this.state.inputBuffer)
+        const message = this.state.inputBuffer
+        this.socket.emit('message', message)
         this.setState({
           inputBuffer: '',
           scrollback: this.state.scrollback.concat([{
             type: 'self',
-            data: this.state.inputBuffer + '\n',
+            data: message + '\n',
             timestamp: new Date()
-          }])
+          }]),
+          history: this.state.history.concat([message]),
+          historyPos: this.state.historyPos + 1
         })
         return
       case 38:
-        if (event.target.selectionStart === 0) {
+        newHistoryPos = this.state.historyPos - 1
+        console.log('up arrow', newHistoryPos, this.state.history)
+        if (event.target.selectionStart === 0 &&
+            this.state.history[newHistoryPos]) {
           event.preventDefault()
           console.log('go previous')
+          this.setState({
+            inputBuffer: this.state.history[newHistoryPos],
+            historyPos: newHistoryPos
+          })
         }
         return
       case 40:
-        if (event.target.selectionStart === this.state.inputBuffer.length) {
+        newHistoryPos = this.state.historyPos + 1
+        console.log('down arrow', newHistoryPos, this.state.history)
+        if (event.target.selectionStart === this.state.inputBuffer.length &&
+            this.state.history[this.state.historyPos]) {
           event.preventDefault()
           console.log('go next')
+          this.setState({
+            inputBuffer: this.state.history[newHistoryPos],
+            historyPos: newHistoryPos
+          })
         }
         return
     }

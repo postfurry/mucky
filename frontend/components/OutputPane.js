@@ -1,5 +1,4 @@
 import { h, Component } from 'preact'
-import classNames from 'classnames'
 
 import OutputLine from './OutputLine.js'
 
