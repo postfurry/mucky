@@ -230,6 +230,7 @@ export default class App extends Component {
         {this.state.bottomPanel === 'input' ? (
           <div className="input-pane">
             <textarea
+              style={{ margin: 0, padding: 0 }}
               ref={el => {
                 this.inputField = el
               }}

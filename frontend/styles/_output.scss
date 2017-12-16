@@ -1,4 +1,7 @@
 @import 'colors';
+@import 'globals';
+
+$hanging-indent: $global-font-size * $font-width-ratio;
 
 .output-line {
   &.self {
@@ -8,4 +11,7 @@
   &.system {
     color: $yellow;
   }
+
+  padding-left: $hanging-indent;
+  text-indent: -$hanging-indent;
 }

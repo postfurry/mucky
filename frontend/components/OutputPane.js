@@ -4,11 +4,18 @@ import OutputLine from './OutputLine.js'
 
 export default class OutputPane extends Component {
   scrollToBottom = () => {
-    this.outputEnd.scrollIntoView()
+    this.output.scrollTop = this.output.scrollHeight
   }
+
+  handleResize = () => this.forceUpdate()
 
   componentDidMount() {
     this.scrollToBottom()
+    window.addEventListener('resize', this.handleResize)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize)
   }
 
   componentDidUpdate() {
@@ -17,7 +24,12 @@ export default class OutputPane extends Component {
 
   render() {
     return (
-      <div className="output-pane">
+      <div
+        className="output-pane"
+        ref={el => {
+          this.output = el
+        }}
+      >
         {this.props.scrollback.map(line => {
           return (
             <OutputLine
@@ -27,12 +39,6 @@ export default class OutputPane extends Component {
             />
           )
         })}
-        <div
-          className="output-bottom"
-          ref={el => {
-            this.outputEnd = el
-          }}
-        />
       </div>
     )
   }

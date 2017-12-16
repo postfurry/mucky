@@ -9,7 +9,7 @@
 
   .banner {
     flex: 0 0 auto;
-    padding: 5px;
+    padding: $slim-padding;
     background: $black;
     font-size: $global-font-size * 0.75;
 
@@ -21,7 +21,7 @@
   .output-pane {
     position: relative;
     overflow-y: auto;
-    padding: 10px;
+    padding: $default-padding;
     white-space: pre-wrap;
     flex: 1 1 auto;
   }
@@ -42,7 +42,7 @@
 
   @mixin bottom-pane {
     flex: 0 0 auto;
-    padding: 10px 10px 15px 10px;
+    padding: $default-padding;
     background: $darker;
   }
 

@@ -1,1 +1,5 @@
-$global-font-size: 2.5vmin
+$global-font-size: 2.5vmin;
+$font-width-ratio: 0.6;
+
+$default-padding: $global-font-size * 0.75;
+$slim-padding: $global-font-size * 0.5;
