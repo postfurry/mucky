@@ -1,6 +1,6 @@
 import { h, Component } from 'preact'
 import classNames from 'classnames'
-import Linkify from 'react-Linkify'
+import Linkify from 'react-linkify'
 import moment from 'moment'
 
 export default class OutputLine extends Component {
