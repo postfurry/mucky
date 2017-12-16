@@ -1,4 +1,5 @@
 @import 'colors';
+@import 'globals';
 
 .app {
   height: 100%;
@@ -10,7 +11,7 @@
     flex: 0 0 auto;
     padding: 5px;
     background: $black;
-    font-size: 14px;
+    font-size: $global-font-size * 75%;
 
     a, a:visited, a:hover {
       color: $midlight;
@@ -30,7 +31,7 @@
     background: $darker;
     color: $lightest;
     font-family: "Source Code Pro";
-    font-size: 20px;
+    font-size: $global-font-size;
     padding: 0;
     margin: 0 0.5em 0 0;
 
@@ -72,7 +73,7 @@
       background: $darker;
       color: $lightest;
       font-family: "Source Code Pro";
-      font-size: 20px;
+      font-size: $global-font-size;
       width: 100%;
       height: 4em;
 

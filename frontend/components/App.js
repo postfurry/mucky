@@ -195,8 +195,7 @@ export default class App extends Component {
           <a target="_blank" href="http://postfurry.net/muck">
             PFMuck
           </a>{' '}
-          WebClient &alpha; &middot; Experimental code &middot; Report issues on
-          the Discord server or{' '}
+          WebClient &beta; &middot; Report issues on the Discord server or{' '}
           <a target="_blank" href="https://github.com/postfurry/mucky/issues">
             Github
           </a>
@@ -224,7 +223,7 @@ export default class App extends Component {
               value={this.state.password}
               onChange={this.handleChange('password')}
             />
-            <input type="submit" className="button" value="Login" />
+            <button onClick={this.doLogin}>Login</button>
             <button onClick={this.listUsers}>Who's online?</button>
           </form>
         ) : null}
