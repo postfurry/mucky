@@ -1,3 +1,4 @@
+const autoprefixer = require('autoprefixer')
 const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -68,8 +69,23 @@ module.exports = {
           {
             test: /\.scss$/,
             use: ExtractTextPlugin.extract({
-              fallback: 'style-loader',
-              use: ['css-loader', 'sass-loader']
+              fallback: require.resolve('style-loader'),
+              use: [
+                require.resolve('css-loader'),
+                require.resolve('sass-loader'),
+                {
+                  loader: require.resolve('postcss-loader'),
+                  options: {
+                    ident: 'postcss',
+                    plugins: () => [
+                      require('postcss-flexbugs-fixes'),
+                      autoprefixer({
+                        flexbox: 'no-2009'
+                      })
+                    ]
+                  }
+                }
+              ]
             })
           }
         ]
