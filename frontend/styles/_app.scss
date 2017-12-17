@@ -13,7 +13,9 @@
     background: $black;
     font-size: $global-font-size * 0.75;
 
-    a, a:visited, a:hover {
+    a,
+    a:visited,
+    a:hover {
       color: $midlight;
     }
   }
@@ -26,11 +28,12 @@
     flex: 1 1 auto;
   }
 
-  input, button {
+  input,
+  button {
     border: $darker;
     background: $darker;
     color: $lightest;
-    font-family: "Source Code Pro";
+    font-family: 'Source Code Pro', monospace;
     font-size: $global-font-size;
     padding: 0;
     margin: 0 0.5em 0 0;
@@ -57,7 +60,8 @@
       width: 10em;
     }
 
-    button, .button {
+    button,
+    .button {
       text-decoration: underline;
       font-weight: bold;
       margin-left: 1em;
@@ -72,7 +76,7 @@
       border: $darker;
       background: $darker;
       color: $lightest;
-      font-family: "Source Code Pro";
+      font-family: 'Source Code Pro', monospace;
       font-size: $global-font-size;
       width: 100%;
       height: 4em;

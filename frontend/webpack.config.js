@@ -1,8 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-const env = process.env.NODE_ENV
-
 const appSrc = path.resolve(__dirname)
 const appBuild = path.resolve(appSrc, 'build')
 const appHtml = path.resolve(appSrc, 'index.html')

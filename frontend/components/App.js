@@ -140,11 +140,11 @@ export default class App extends Component {
 
   handleInputKeyDown = event => {
     let newHistoryPos
+    const message = this.state.inputBuffer
     switch (event.keyCode) {
       case 13:
         event.preventDefault()
         this.handleInputChange(event)
-        const message = this.state.inputBuffer
         this.socket.emit('worldInput', message)
         this.setState({
           inputBuffer: '',

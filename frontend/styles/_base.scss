@@ -9,6 +9,10 @@ body {
   color: $lighter;
   background: $darkest;
   box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: fixed;
 }
 
 a, a:visited, a:hover {
@@ -18,11 +22,4 @@ a, a:visited, a:hover {
 html {
     overflow: hidden;
     height: 100%;
-}
-
-body {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    position: fixed;
 }

@@ -13,5 +13,13 @@
   },
   "env": {
     "browser": true
-  }
+  },
+  "overrides": [
+    {
+      "files": "webpack.config.js",
+      "env": {
+        "node": true
+      }
+    }
+  ]
 }
