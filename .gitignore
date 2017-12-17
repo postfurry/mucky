@@ -3,4 +3,5 @@
 node_modules
 frontend/build
 frontend/**/*.css
+.vscode
 
