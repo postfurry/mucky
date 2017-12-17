@@ -3,6 +3,7 @@ const net = require('net')
 const http = require('http')
 const path = require('path')
 const express = require('express')
+const split = require('split')
 
 const config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'))
 const target = config.target
@@ -80,31 +81,16 @@ io.sockets.on('connection', function(socket) {
       socket.emit('newConnection')
     }
 
-    // It's much nicer for the client to present data one line at a time, and
-    // this usually works, but there are some edge-cases where the server sends
-    // multiple lines at once (like a non-logged-in WHO) and other cases where
-    // the server breaks off before sending a newline (Large amounts of data
-    // maybe?). So we normalize all that by reading into a buffer until we see
-    // a read that ends in a newline, and THEN split it all by newlines and send
-    // to the client one line at a time.
-    let serverBuffer = ''
-
-    const handleData = function(data) {
-      serverBuffer += data
-      const lastByte = data[data.length - 1]
-      if (lastByte === '\n') {
-        serverBuffer.split('\n').forEach(line => {
-          sessions[sessionId].scrollback.push(line)
-          sendLine(line)
-        })
-        sessions[sessionId].scrollback = sessions[sessionId].scrollback.slice(
-          -SERVER_SCROLLBACK
-        )
-        serverBuffer = ''
-      }
+    const worldConnectionLines = worldConnection.pipe(split())
+    const handleLine = line => {
+      sessions[sessionId].scrollback.push(line)
+      sendLine(line)
+      sessions[sessionId].scrollback = sessions[sessionId].scrollback.slice(
+        -SERVER_SCROLLBACK
+      )
     }
 
-    worldConnection.addListener('data', handleData)
+    worldConnectionLines.on('data', handleLine)
 
     let handleClose = function() {
       log('disconnected from world, closing session ' + sessionId)
@@ -136,7 +122,7 @@ io.sockets.on('connection', function(socket) {
         sessions[sessionId].sockets--
         sessions[sessionId].lastActive = new Date()
       }
-      worldConnection.removeListener('data', handleData)
+      worldConnectionLines.removeListener('data', handleLine)
       worldConnection.removeListener('close', handleClose)
     })
   })
