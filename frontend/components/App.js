@@ -86,7 +86,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    this.inputField.focus()
+    this.inputField && this.inputField.focus()
   }
 
   showLoginPane() {
@@ -95,7 +95,7 @@ export default class App extends Component {
         bottomPanel: 'login'
       },
       () => {
-        this.loginField.focus()
+        this.loginField && this.loginField.focus()
       }
     )
   }
@@ -106,7 +106,7 @@ export default class App extends Component {
         bottomPanel: 'input'
       },
       () => {
-        this.inputField.focus()
+        this.inputField && this.inputField.focus()
       }
     )
   }
@@ -140,11 +140,11 @@ export default class App extends Component {
 
   handleInputKeyDown = event => {
     let newHistoryPos
+    this.handleInputChange(event)
     const message = this.state.inputBuffer
     switch (event.keyCode) {
       case 13:
         event.preventDefault()
-        this.handleInputChange(event)
         this.socket.emit('worldInput', message)
         this.setState({
           inputBuffer: '',
@@ -166,10 +166,15 @@ export default class App extends Component {
           this.state.history[newHistoryPos]
         ) {
           event.preventDefault()
-          this.setState({
-            inputBuffer: this.state.history[newHistoryPos],
-            historyPos: newHistoryPos
-          })
+          this.setState(
+            {
+              inputBuffer: this.state.history[newHistoryPos],
+              historyPos: newHistoryPos
+            },
+            () => {
+              this.inputField.selectionStart = this.inputField.selectionEnd = 0
+            }
+          )
         }
         return
       case 40:
